@@ -1,0 +1,267 @@
+using System;
+
+class Program
+{
+    // 🔹 Node sınıfı: her düğüm bir öğrenciyi temsil eder
+    public class Node
+    {
+        public string Ad;
+        public string Soyad;
+        public string Numara;
+        public Node Next;
+
+        public Node(string ad, string soyad, string numara)
+        {
+            Ad = ad;
+            Soyad = soyad;
+            Numara = numara;
+            Next = null;
+        }
+
+        public override string ToString()
+        {
+            return $"{Numara} - {Ad} {Soyad}";
+        }
+    }
+
+    // 🔹 Bağlı Liste sınıfı
+    public class BagliListe
+    {
+        private Node head;
+
+        public BagliListe()
+        {
+            head = null;
+        }
+
+        // 🔸 Başa öğrenci ekleme
+        public void BasaEkle(string ad, string soyad, string numara)
+        {
+            Node yeni = new Node(ad, soyad, numara);
+            yeni.Next = head;
+            head = yeni;
+            Console.WriteLine($"{numara} numaralı öğrenci başa eklendi.");
+        }
+
+        // 🔸 Sona öğrenci ekleme
+        public void SonaEkle(string ad, string soyad, string numara)
+        {
+            Node yeni = new Node(ad, soyad, numara);
+            if (head == null)
+            {
+                head = yeni;
+                Console.WriteLine($"{numara} numaralı öğrenci sona eklendi.");
+                return;
+            }
+
+            Node current = head;
+            while (current.Next != null)
+                current = current.Next;
+
+            current.Next = yeni;
+            Console.WriteLine($"{numara} numaralı öğrenci sona eklendi.");
+        }
+
+        // 🔸 Belirli bir öğrenciden SONRA ekleme
+        public void SonraEkle(string hedefNumara, string ad, string soyad, string numara)
+        {
+            Node current = head;
+            while (current != null && current.Numara != hedefNumara)
+                current = current.Next;
+
+            if (current == null)
+            {
+                Console.WriteLine($"{hedefNumara} numaralı öğrenci bulunamadı.");
+                return;
+            }
+
+            Node yeni = new Node(ad, soyad, numara);
+            yeni.Next = current.Next;
+            current.Next = yeni;
+
+            Console.WriteLine($"{numara} numaralı öğrenci {hedefNumara} numarasından sonra eklendi.");
+        }
+
+        // 🔸 Belirli bir öğrenciden ÖNCE ekleme
+        public void OnceEkle(string hedefNumara, string ad, string soyad, string numara)
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Liste boş!");
+                return;
+            }
+
+            if (head.Numara == hedefNumara)
+            {
+                BasaEkle(ad, soyad, numara);
+                return;
+            }
+
+            Node prev = null;
+            Node current = head;
+
+            while (current != null && current.Numara != hedefNumara)
+            {
+                prev = current;
+                current = current.Next;
+            }
+
+            if (current == null)
+            {
+                Console.WriteLine($"{hedefNumara} numaralı öğrenci bulunamadı.");
+                return;
+            }
+
+            Node yeni = new Node(ad, soyad, numara);
+            prev.Next = yeni;
+            yeni.Next = current;
+
+            Console.WriteLine($"{numara} numaralı öğrenci {hedefNumara} numarasından önce eklendi.");
+        }
+
+        // 🔸 Baştan silme
+        public void BastanSil()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Liste boş!");
+                return;
+            }
+
+            Console.WriteLine($"{head.Numara} numaralı öğrenci listeden silindi (baştan).");
+            head = head.Next;
+        }
+
+        // 🔸 Sondan silme
+        public void SondanSil()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Liste boş!");
+                return;
+            }
+
+            if (head.Next == null)
+            {
+                Console.WriteLine($"{head.Numara} numaralı öğrenci listeden silindi (tek eleman).");
+                head = null;
+                return;
+            }
+
+            Node current = head;
+            while (current.Next.Next != null)
+                current = current.Next;
+
+            Console.WriteLine($"{current.Next.Numara} numaralı öğrenci sondan silindi.");
+            current.Next = null;
+        }
+
+        // 🔸 Belirli bir öğrenciyi silme
+        public void Sil(string numara)
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Liste boş!");
+                return;
+            }
+
+            if (head.Numara == numara)
+            {
+                Console.WriteLine($"{numara} numaralı öğrenci silindi.");
+                head = head.Next;
+                return;
+            }
+
+            Node prev = null;
+            Node current = head;
+
+            while (current != null && current.Numara != numara)
+            {
+                prev = current;
+                current = current.Next;
+            }
+
+            if (current == null)
+            {
+                Console.WriteLine($"{numara} numaralı öğrenci bulunamadı.");
+                return;
+            }
+
+            prev.Next = current.Next;
+            Console.WriteLine($"{numara} numaralı öğrenci listeden silindi.");
+        }
+
+        // 🔸 Arama işlemi
+        public void Ara(string numara)
+        {
+            Node current = head;
+            while (current != null)
+            {
+                if (current.Numara == numara)
+                {
+                    Console.WriteLine($"Bulundu: {current}");
+                    return;
+                }
+                current = current.Next;
+            }
+            Console.WriteLine($"{numara} numaralı öğrenci bulunamadı.");
+        }
+
+        // 🔸 Listeleme işlemi
+        public void Display()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Liste boş!");
+                return;
+            }
+
+            Console.WriteLine("\n--- Öğrenci Listesi ---");
+            Node current = head;
+            while (current != null)
+            {
+                Console.WriteLine(current);
+                current = current.Next;
+            }
+            Console.WriteLine("-----------------------");
+        }
+
+        // 🔸 Kullanıcıdan öğrenci ekleme
+        public void KullanicidanEkle()
+        {
+            Console.Write("Ad: ");
+            string ad = Console.ReadLine();
+            Console.Write("Soyad: ");
+            string soyad = Console.ReadLine();
+            Console.Write("Numara: ");
+            string numara = Console.ReadLine();
+
+            SonaEkle(ad, soyad, numara);
+        }
+    }
+
+    // 🔹 Main metodu
+    static void Main(string[] args)
+    {
+        BagliListe liste = new BagliListe();
+
+        // Örnek kullanım
+        liste.BasaEkle("Ahmet", "Yılmaz", "101");
+        liste.SonaEkle("Ayşe", "Demir", "102");
+        liste.SonaEkle("Mehmet", "Kara", "103");
+        liste.SonraEkle("102", "Zeynep", "Çelik", "104");
+        liste.OnceEkle("103", "Can", "Aydın", "105");
+
+        liste.Display();
+
+        liste.Ara("104");
+        liste.Sil("105");
+        liste.SondanSil();
+        liste.BastanSil();
+
+        liste.Display();
+
+        // Kullanıcıdan ekleme için açabilirsin:
+        // liste.KullanicidanEkle();
+    }
+}
